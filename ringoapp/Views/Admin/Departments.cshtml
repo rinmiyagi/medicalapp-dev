@@ -1,0 +1,85 @@
+@model List<medicalapp.Models.MedicalDepartment>
+@{
+    ViewData["Title"] = "Manage Departments";
+}
+
+<h2 class="fw-bold mb-4">Admin Dashboard</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="list-group shadow-sm rounded-3">
+            <a asp-action="Dashboard" class="list-group-item list-group-item-action fw-bold py-3">
+                👤 Pending Verifications
+            </a>
+            <a asp-action="Departments" class="list-group-item list-group-item-action active fw-bold py-3">
+                🏥 Manage Departments
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="card shadow-sm border-0 bg-white rounded-3 mb-4">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="mb-0 fw-bold">Add New Medical Department</h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="AddDepartment" method="post" class="row g-3 align-items-end">
+                    @Html.AntiForgeryToken()
+                    <div class="col-md-9">
+                        <label for="departmentName" class="form-label fw-bold text-muted small">Department Name</label>
+                        <input type="text" name="departmentName" id="departmentName" class="form-control" placeholder="e.g. Pediatrics" required />
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100 py-2">Add Department</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 bg-white rounded-3">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="mb-0 fw-bold">Registered Medical Departments</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">ID</th>
+                                <th>Department Name</th>
+                                <th class="text-end pe-4">Registered Doctors</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dept in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 text-muted font-monospace">@dept.DepartmentId</td>
+                                    <td class="fw-bold text-dark">@dept.DepartmentName</td>
+                                    <td class="text-end pe-4">
+                                        <span class="badge bg-primary rounded-pill px-3">@dept.Doctors.Count</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

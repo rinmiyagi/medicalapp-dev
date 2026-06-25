@@ -1,0 +1,168 @@
+@model medicalapp.Models.Appointment
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prescription_#@Model.Prescription.PrescriptionId</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .prescription-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            padding: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            position: relative;
+            border-top: 10px solid #0d6efd;
+        }
+
+        .letterhead {
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .hospital-logo {
+            font-size: 2.5rem;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+
+        .rx-symbol {
+            font-size: 3rem;
+            color: #0d6efd;
+            font-family: Georgia, serif;
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 15px;
+        }
+
+        .medications-area {
+            min-height: 200px;
+            border-left: 3px solid #dee2e6;
+            padding-left: 20px;
+            font-family: Consolas, monospace;
+            font-size: 1.1rem;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .signature-section {
+            margin-top: 80px;
+            border-top: 1px solid #dee2e6;
+            padding-top: 15px;
+            max-width: 250px;
+        }
+
+        .action-bar {
+            max-width: 800px;
+            margin: 20px auto 0 auto;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Print styles */
+        @@media print {
+            body {
+                background-color: #ffffff;
+            }
+            .prescription-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                border-top: none;
+            }
+            .action-bar {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="action-bar no-print">
+        <a asp-action="Prescriptions" class="btn btn-outline-secondary">
+            &larr; Back to Prescriptions
+        </a>
+        <button onclick="window.print();" class="btn btn-primary">
+            🖨️ Print / Save as PDF
+        </button>
+    </div>
+
+    <div class="prescription-container">
+        <!-- Letterhead -->
+        <div class="letterhead d-flex justify-content-between align-items-center">
+            <div>
+                <div class="hospital-logo">🏥 MediCloud Portal</div>
+                <div class="text-muted small">Electronic Medical Prescription Service</div>
+            </div>
+            <div class="text-end">
+                <h5 class="fw-bold mb-1">Dr. @Model.Doctor.FullName</h5>
+                <div class="text-muted small">@Model.Doctor.Specialization</div>
+                <div class="text-muted small">@Model.Doctor.Department.DepartmentName</div>
+                <div class="text-muted small">@Model.Doctor.HospitalName</div>
+            </div>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="row mb-5 py-3 px-2 bg-light rounded text-dark">
+            <div class="col-md-6 mb-2">
+                <strong>Patient Name:</strong> @Model.Patient.FullName
+            </div>
+            <div class="col-md-6 mb-2">
+                <strong>Date of Issue:</strong> @Model.Prescription.IssuedAt.ToString("f")
+            </div>
+            <div class="col-md-6">
+                <strong>Age/DOB:</strong> @Model.Patient.DateOfBirth.ToString("d")
+            </div>
+            <div class="col-md-6">
+                <strong>Gender:</strong> @Model.Patient.Gender
+            </div>
+        </div>
+
+        <!-- Rx Body -->
+        <div class="rx-symbol">℞</div>
+        <div class="medications-area mb-5">@Model.Prescription.Medications</div>
+
+        @if (!string.IsNullOrEmpty(Model.Prescription.Notes))
+        {
+            <div class="mb-5 bg-light p-3 rounded border-start border-primary border-3">
+                <h6 class="fw-bold text-primary">Doctor's Notes & Advice:</h6>
+                <p class="mb-0 text-muted small">@Model.Prescription.Notes</p>
+            </div>
+        }
+
+        <!-- Signature -->
+        <div class="d-flex justify-content-between align-items-end mt-5 pt-5">
+            <div class="text-muted small">
+                Prescription ID: <code>#@Model.Prescription.PrescriptionId</code><br />
+                Appointment ID: <code>#@Model.AppointmentId</code>
+            </div>
+            <div class="signature-section text-center">
+                <div class="fw-bold">Dr. @Model.Doctor.FullName</div>
+                <div class="text-muted small border-top pt-1 mt-3">Authorized Signature</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Automatically open the print dialog when the page is loaded
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

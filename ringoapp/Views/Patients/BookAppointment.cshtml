@@ -1,0 +1,87 @@
+@model medicalapp.DTOs.AppointmentBookDto
+@{
+    ViewData["Title"] = "Book Appointment";
+    var doctor = (medicalapp.Models.Doctor)ViewBag.Doctor;
+}
+
+<h2 class="fw-bold mb-4">Book Consultation</h2>
+
+<div class="row g-4">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 bg-white rounded-3 h-100">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-4 text-primary fw-bold text-center mx-auto mb-3" style="width: 80px; height: 80px; line-height: 32px; font-size: 2rem;">
+                        Dr
+                    </div>
+                    <h3 class="fw-bold mb-1">Dr. @doctor.FullName</h3>
+                    <span class="badge bg-secondary px-3 py-2 mb-2">@doctor.Department.DepartmentName</span>
+                </div>
+                <hr />
+                <div class="py-2">
+                    <p class="mb-2"><strong>Specialization:</strong> @doctor.Specialization</p>
+                    <p class="mb-2"><strong>Hospital:</strong> @doctor.HospitalName</p>
+                    <p class="mb-2"><strong>Consultation Fee:</strong> <span class="text-primary fw-bold">$@doctor.ConsultationFee.ToString("F2")</span></p>
+                </div>
+                <hr />
+                <div class="py-2">
+                    <h6 class="fw-bold mb-3 text-secondary">Weekly Availability:</h6>
+                    @if (doctor.Schedules == null || doctor.Schedules.Count == 0)
+                    {
+                        <p class="text-muted small mb-0">No active hours set. Contact clinic directly.</p>
+                    }
+                    else
+                    {
+                        string[] days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+                        <ul class="list-group list-group-flush rounded-3 small border">
+                            @foreach (var s in doctor.Schedules.OrderBy(x => x.DayOfWeek))
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                    <span class="fw-bold text-dark">@days[s.DayOfWeek]</span>
+                                    <span class="badge bg-light text-dark border">
+                                        @DateTime.Today.Add(s.StartTime).ToString("hh:mm tt") - 
+                                        @DateTime.Today.Add(s.EndTime).ToString("hh:mm tt")
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0 bg-white rounded-3 h-100">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="mb-0 fw-bold">Select Date & Time</h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="BookAppointment" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="DoctorId" />
+                    
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+                    
+                    <div class="mb-4">
+                        <label asp-for="ScheduledDateTime" class="form-label fw-bold text-muted small">Choose Date & Time</label>
+                        <input asp-for="ScheduledDateTime" class="form-control form-control-lg" type="datetime-local" />
+                        <span asp-validation-for="ScheduledDateTime" class="text-danger"></span>
+                        <div class="form-text mt-2 text-muted">
+                            Appointments must be scheduled for a future date and time. Please ensure the doctor is available at the chosen hour.
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a asp-action="SearchDoctors" class="btn btn-light px-4 py-2 me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4 py-2">Confirm Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

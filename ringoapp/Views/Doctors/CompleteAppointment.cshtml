@@ -1,0 +1,65 @@
+@model medicalapp.Models.Appointment
+@{
+    ViewData["Title"] = "Complete Consultation";
+}
+
+<h2 class="fw-bold mb-4">Complete Consultation</h2>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 bg-white rounded-3">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="mb-0 fw-bold">Patient Details</h5>
+            </div>
+            <div class="card-body p-4">
+                <h4 class="fw-bold mb-3">@Model.Patient.FullName</h4>
+                <div class="mb-2"><strong>Gender:</strong> <span class="badge bg-light text-dark">@Model.Patient.Gender</span></div>
+                <div class="mb-2"><strong>DOB:</strong> @Model.Patient.DateOfBirth.ToString("d")</div>
+                <div class="mb-2"><strong>Appointment Scheduled:</strong> <br /><span class="text-primary fw-bold">@Model.ScheduledDateTime.ToString("g")</span></div>
+                
+                @if (!string.IsNullOrEmpty(Model.Patient.MedicalHistoryBaseline))
+                {
+                    <hr />
+                    <h6 class="fw-bold text-muted">Baseline Medical History:</h6>
+                    <p class="mb-0 text-muted small bg-light p-2 rounded" style="white-space: pre-wrap;">@Model.Patient.MedicalHistoryBaseline</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 bg-white rounded-3">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="mb-0 fw-bold">Prescription & Medical Notes</h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="CompleteAppointment" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="appointmentId" value="@Model.AppointmentId" />
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label for="medications" class="form-label fw-bold">Medications & Dosage <span class="text-danger">*</span></label>
+                        <textarea name="medications" id="medications" class="form-control" rows="5" placeholder="e.g.&#10;Amoxicillin 500mg - 3 times daily for 7 days&#10;Paracetamol 500mg - every 6 hours as needed for fever" required></textarea>
+                        <div class="form-text">Specify medications, dosages, and duration clearly.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="notes" class="form-label fw-bold">Clinical Notes / Advice</label>
+                        <textarea name="notes" id="notes" class="form-control" rows="4" placeholder="Enter diagnostic observations, patient advice, or follow-up instructions..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Dashboard" class="btn btn-light px-4">Cancel</a>
+                        <button type="submit" class="btn btn-success px-4">Finalize Consultation</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

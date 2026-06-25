@@ -1,0 +1,76 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
+                <label asp-for="Username" class="form-label"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.FullName" class="form-control" placeholder="Full Name" />
+                <label asp-for="Input.FullName" class="form-label">Full Name</label>
+                <span asp-validation-for="Input.FullName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Phone Number" />
+                <label asp-for="Input.PhoneNumber" class="form-label">Phone Number</label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+
+            @if (User.IsInRole("Patient"))
+            {
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.DateOfBirth" class="form-control" type="date" />
+                    <label asp-for="Input.DateOfBirth" class="form-label">Date of Birth</label>
+                    <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <select asp-for="Input.Gender" class="form-select">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <label asp-for="Input.Gender" class="form-label">Gender</label>
+                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Input.MedicalHistoryBaseline" class="form-control" placeholder="Medical History" style="height: 100px;"></textarea>
+                    <label asp-for="Input.MedicalHistoryBaseline" class="form-label">Medical History</label>
+                    <span asp-validation-for="Input.MedicalHistoryBaseline" class="text-danger"></span>
+                </div>
+            }
+            else if (User.IsInRole("Doctor"))
+            {
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Specialization" class="form-control" placeholder="Specialization" />
+                    <label asp-for="Input.Specialization" class="form-label">Specialization</label>
+                    <span asp-validation-for="Input.Specialization" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.ConsultationFee" class="form-control" type="number" step="0.01" placeholder="Consultation Fee" />
+                    <label asp-for="Input.ConsultationFee" class="form-label">Consultation Fee</label>
+                    <span asp-validation-for="Input.ConsultationFee" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.HospitalName" class="form-control" placeholder="Hospital Name" />
+                    <label asp-for="Input.HospitalName" class="form-label">Hospital Name</label>
+                    <span asp-validation-for="Input.HospitalName" class="text-danger"></span>
+                </div>
+            }
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary mt-2">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,68 @@
+@{
+    ViewData["Title"] = "Welcome to MediCloud Portal";
+}
+
+<div class="py-5 text-center bg-light rounded-3 border mb-5 shadow-sm" style="background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);">
+    <div class="container py-3">
+        <h1 class="display-4 fw-bold text-primary">🏥 MediCloud Portal</h1>
+        <p class="col-md-8 mx-auto fs-5 text-muted">
+            Welcome to the future of healthcare. Book consultations, manage appointments, get prescriptions, and coordinate patient care seamlessly in one secure platform.
+        </p>
+        
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                if (User.IsInRole("Patient"))
+                {
+                    <a asp-controller="Patients" asp-action="Dashboard" class="btn btn-primary btn-lg px-4 gap-3">Go to Dashboard</a>
+                    <a asp-controller="Patients" asp-action="SearchDoctors" class="btn btn-outline-secondary btn-lg px-4">Find a Doctor</a>
+                }
+                else if (User.IsInRole("Doctor"))
+                {
+                    <a asp-controller="Doctors" asp-action="Dashboard" class="btn btn-primary btn-lg px-4 gap-3">Doctor Dashboard</a>
+                    <a asp-controller="Doctors" asp-action="Schedule" class="btn btn-outline-secondary btn-lg px-4">Manage Schedule</a>
+                }
+                else if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-primary btn-lg px-4 gap-3">Admin Dashboard</a>
+                    <a asp-controller="Admin" asp-action="Departments" class="btn btn-outline-secondary btn-lg px-4">Manage Departments</a>
+                }
+            }
+            else
+            {
+                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary btn-lg px-4 gap-3">Create an Account</a>
+                <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary btn-lg px-4">Sign In</a>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 justify-content-center">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 bg-white rounded-3">
+            <div class="card-body p-4 text-center">
+                <div class="fs-1 text-primary mb-3">📅</div>
+                <h4 class="card-title fw-bold">Easy Scheduling</h4>
+                <p class="card-text text-muted">Book consultations with top medical specialists instantly from your home or mobile device.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 bg-white rounded-3">
+            <div class="card-body p-4 text-center">
+                <div class="fs-1 text-success mb-3">📄</div>
+                <h4 class="card-title fw-bold">Prescriptions & History</h4>
+                <p class="card-text text-muted">Access your active prescriptions, medical notes, and consultation records securely at any time.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 bg-white rounded-3">
+            <div class="card-body p-4 text-center">
+                <div class="fs-1 text-warning mb-3">🛡️</div>
+                <h4 class="card-title fw-bold">Verified Professionals</h4>
+                <p class="card-text text-muted">All registered medical staff undergo strict verification before they can practice on MediCloud.</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,121 @@
+@model List<medicalapp.Models.Doctor>
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2 class="fw-bold mb-4">Admin Dashboard</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="list-group shadow-sm rounded-3">
+            <a asp-action="Dashboard" class="list-group-item list-group-item-action active fw-bold py-3">
+                👤 Pending Verifications
+            </a>
+            <a asp-action="Departments" class="list-group-item list-group-item-action fw-bold py-3">
+                🏥 Manage Departments
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="card shadow-sm border-0 bg-white rounded-3">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="mb-0 fw-bold">Doctor Verification Requests</h5>
+            </div>
+            <div class="card-body p-0">
+                @if (Model == null || Model.Count == 0)
+                {
+                    <div class="text-center py-5">
+                        <span class="fs-1 text-muted">🎉</span>
+                        <p class="mt-3 text-muted mb-0">All registered doctors have been verified. No pending requests!</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Doctor Name</th>
+                                    <th>Department</th>
+                                    <th>Specialization</th>
+                                    <th>Hospital</th>
+                                    <th>License</th>
+                                    <th>Registered At</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var doctor in Model)
+                                {
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="fw-bold">Dr. @doctor.FullName</div>
+                                            <small class="text-muted">@doctor.User?.Email</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">@doctor.Department?.DepartmentName</span>
+                                        </td>
+                                        <td>@doctor.Specialization</td>
+                                        <td>@doctor.HospitalName</td>
+                                        <td>
+                                            @{
+                                                var license = doctor.User?.Documents?.FirstOrDefault(d => d.DocumentType == "MedicalLicense");
+                                                if (license != null)
+                                                {
+                                                    <a href="@license.FileUrl" target="_blank" class="btn btn-outline-primary btn-sm py-1 px-2">
+                                                        📄 View License
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted small">No Document</span>
+                                                }
+                                            }
+                                        </td>
+                                        <td>@doctor.User?.CreatedAt.ToString("g")</td>
+                                        <td class="text-end pe-4">
+                                            <div class="d-flex justify-content-end gap-1">
+                                                <button type="button" class="btn btn-success btn-sm px-3" onclick="showConfirmModal({
+                                                    title: 'Approve Doctor Credentials',
+                                                    message: 'Are you sure you want to approve Dr. @doctor.FullName? They will be notified and allowed to accept consultation requests.',
+                                                    action: '@Url.Action("VerifyDoctor", "Admin")',
+                                                    inputs: { doctorId: '@doctor.DoctorId', verify: 'true' },
+                                                    buttonText: 'Approve',
+                                                    buttonClass: 'btn-success'
+                                                })">Approve</button>
+                                                <button type="button" class="btn btn-outline-danger btn-sm px-3" onclick="showConfirmModal({
+                                                    title: 'Reject Doctor Credentials',
+                                                    message: 'Are you sure you want to reject and remove Dr. @doctor.FullName\'s profile?',
+                                                    action: '@Url.Action("VerifyDoctor", "Admin")',
+                                                    inputs: { doctorId: '@doctor.DoctorId', verify: 'false' },
+                                                    buttonText: 'Reject',
+                                                    buttonClass: 'btn-danger'
+                                                })">Reject</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
