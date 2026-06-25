@@ -23,7 +23,7 @@ Before getting started, make sure you have the following tools installed:
 ### Step 1: Clone the Repository and Load the Solution
 1. Open **Visual Studio 2022**.
 2. In the start window, select **"Clone a repository"**.
-3. In the **"Repository location"** field, enter the Git repository URL.
+3. In the **"Repository location"** field, enter the Git repository URL **(https://github.com/rinmiyagi/medicalapp-dev.git)**.
 4. Specify a local **"Path"** of your choice and click **"Clone"**.
 5. Once the cloning process is complete, Visual Studio will automatically load the project.
    * *Note: If the "Solution Explorer" only displays folder directories (Folder View), double-click **`medicalapp.sln`** inside the Solution Explorer to open the solution.*
